@@ -1,5 +1,5 @@
 
-
+import sys
 
 char_to_num = {
     '.': 100, "'": 101, '!': 102,
@@ -15,7 +15,7 @@ char_to_num = {
 num_to_char = {v: k for k, v in char_to_num.items()}
 
 
-text = ""
+
 
 def text_to_number(text):
     converted = ""
@@ -24,7 +24,7 @@ def text_to_number(text):
         if ch in char_to_num:
             converted += str(char_to_num[ch]) + ","
 
-    return converted
+    return converted.rstrip(",")
 
 
 def numbers_to_text(text):
@@ -38,16 +38,30 @@ def numbers_to_text(text):
     return converted
 
 def main():
-    text = input("enter text: ")
-    if any(char.isalpha() for char in text):
+    if len(sys.argv) < 2:  # אם לא הוזן פרמטר
+        if len(sys.argv) != 2:
+            print(" python script.py eyncript  or  python script.py dycript")
+            sys.exit(1)
+
+    mode = sys.argv[1].lower()  # לוקח את המצב מהפרמטר
+
+    if mode == "eyncript":
+        text = input("enter text: ")
         with open("encrypted_msg.txt", "w") as file:
             file.write(text_to_number(text))
+    elif mode == "dycript":
+        with open("encrypted_msg.txt", "r") as file:
+            encrypted_text = file.read().strip()
 
-    if any(char.isdigit() for char in text):
-        print(numbers_to_text(text))
+        decrypted = numbers_to_text(encrypted_text)
+        print("the text from the file:\n")
+        print(decrypted)
+
+
 
 
 if __name__ == "__main__":
     main()
+
 
 
