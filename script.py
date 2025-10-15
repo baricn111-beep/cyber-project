@@ -28,12 +28,16 @@ def text_to_number(text):
 
 
 def numbers_to_text(text):
-    converted = ""
 
+    if not text.strip():  # אם הקלט ריק או מכיל רק רווחים
+        return ""  # מחזיר מחרוזת ריקה
+
+    converted = ""
     for num_str in text.split(","):
         num = int(num_str)
         if num in num_to_char:
             converted += num_to_char[num]
+
 
     return converted
 
