@@ -38,10 +38,12 @@ def numbers_to_text(text):
     return converted
 
 def main():
-    if len(sys.argv) < 2:  # אם לא הוזן פרמטר
-        if len(sys.argv) != 2:
-            print(" python script.py eyncript  or  python script.py dycript")
-            sys.exit(1)
+
+
+    if len(sys.argv) != 2:
+        print("Usage: python script.py eyncript OR python script.py dycript")
+        sys.exit(1)
+
 
     mode = sys.argv[1].lower()  # לוקח את המצב מהפרמטר
 
