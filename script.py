@@ -1,5 +1,13 @@
-
 import sys
+import logging
+
+# הגדרת logging
+logging.basicConfig(
+    filename='log.txt',  # שם הקובץ שבו הלוגים יישמרו
+    level=logging.INFO,   # רמת הלוגים (INFO כולל הכל למעט DEBUG)
+    format='[%(levelname)s] %(asctime)s - %(message)s',  # פורמט של כל שורה
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 char_to_num = {
     '.': 100, "'": 101, '!': 102,
@@ -15,59 +23,83 @@ char_to_num = {
 num_to_char = {v: k for k, v in char_to_num.items()}
 
 
+def text_to_number():
+    logging.info("Starting text to number conversion")
+    while True:
+        text = input("enter text: ")
+        converted = ""
 
+        try:
+            for ch in text:
+                if ch not in char_to_num:
+                    raise ValueError(f"Invalid character in input: '{ch}'")
 
-def text_to_number(text):
-    converted = ""
+                number = char_to_num[ch]
+                logging.info(f"Converting character '{ch}' -> number {number}")
+                converted += str(number) + ","
 
-    for ch in text:
-        if ch in char_to_num:
-            converted += str(char_to_num[ch]) + ","
+            logging.info(f"Conversion complete. Result: {converted.rstrip(',')}")
+            return converted.rstrip(",")
 
-    return converted.rstrip(",")
+        except ValueError as e:
+            logging.error(e)
+            print(f"Error: {e}. Please try again.\n")
 
 
 def numbers_to_text(text):
+    logging.info("Starting number to text conversion")
+    for ch in text:
+        assert ch.isdigit() or ch == ",", "Invalid character in encrypted file"
 
-    if not text.strip():  # אם הקלט ריק או מכיל רק רווחים
-        return ""  # מחזיר מחרוזת ריקה
+    if not text.strip():
+        logging.info("Input text is empty")
+        return ""
 
     converted = ""
     for num_str in text.split(","):
         num = int(num_str)
         if num in num_to_char:
-            converted += num_to_char[num]
+            char = num_to_char[num]
+            logging.info(f"Converting number {num} -> character '{char}'")
+            converted += char
 
-
+    logging.info(f"Conversion complete. Result: {converted}")
     return converted
 
-def main():
 
+def main():
+    logging.info("Program started")
 
     if len(sys.argv) != 2:
-        print("Usage: python script.py eyncript OR python script.py dycript")
+        logging.error("Usage: python script.py encrypt OR python script.py decrypt")
         sys.exit(1)
 
+    mode = sys.argv[1].lower()
+    logging.info(f"Mode selected: {mode}")
 
-    mode = sys.argv[1].lower()  # לוקח את המצב מהפרמטר
-
-    if mode == "eyncript":
-        text = input("enter text: ")
+    if mode == "encrypt":
+        encrypted = text_to_number()
+        logging.info("Writing encrypted text to 'encrypted_msg.txt'")
         with open("encrypted_msg.txt", "w") as file:
-            file.write(text_to_number(text))
-    elif mode == "dycript":
-        with open("encrypted_msg.txt", "r") as file:
-            encrypted_text = file.read().strip()
+            file.write(encrypted)
+        logging.info("Encryption complete! Saved to 'encrypted_msg.txt'")
+
+    elif mode == "decrypt":
+        logging.info("Reading encrypted text from 'encrypted_msg.txt'")
+        try:
+            with open("encrypted_msg.txt", "r") as file:
+                encrypted_text = file.read().strip()
+        except FileNotFoundError:
+            logging.error("File 'encrypted_msg.txt' not found!")
+            sys.exit(1)
 
         decrypted = numbers_to_text(encrypted_text)
-        print("the text from the file:\n")
+        logging.info("Decryption complete!")
+        print("\nDecrypted text from the file:\n")
         print(decrypted)
 
-
+    logging.info("Program finished")
 
 
 if __name__ == "__main__":
     main()
-
-
-
