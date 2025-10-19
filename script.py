@@ -1,14 +1,16 @@
 import sys
 import logging
+import os
 
-# הגדרת logging
+# Logging configuration
 logging.basicConfig(
-    filename='log.txt',  # שם הקובץ שבו הלוגים יישמרו
-    level=logging.INFO,   # רמת הלוגים (INFO כולל הכל למעט DEBUG)
-    format='[%(levelname)s] %(asctime)s - %(message)s',  # פורמט של כל שורה
+    filename='log.txt',
+    level=logging.INFO,
+    format='[%(levelname)s] %(asctime)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+# Character to number mapping
 char_to_num = {
     '.': 100, "'": 101, '!': 102,
     '-': 103, ' ': 98, ',': 99,
@@ -24,6 +26,14 @@ num_to_char = {v: k for k, v in char_to_num.items()}
 
 
 def text_to_number():
+    """
+    Convert user input text into a string of numbers separated by commas based on a predefined mapping.
+
+    Prompts the user to enter text until all characters are valid. Logs each conversion step and the final result.
+
+    Returns:
+        str: Comma-separated string of numbers representing the input text.
+    """
     logging.info("Starting text to number conversion")
     while True:
         text = input("enter text: ")
@@ -47,6 +57,21 @@ def text_to_number():
 
 
 def numbers_to_text(text):
+    """
+    Convert a string of numbers back to text using the predefined mapping.
+
+    Checks if the encrypted file exists; logs and exits if it doesn't. Each number is converted back to its corresponding character.
+
+        text (str): Comma-separated string of numbers representing encrypted text.
+
+    Returns:
+        str: The decrypted text.
+    """
+    if not os.path.exists('encrypted_msg.txt'):
+        print(f"[ERROR] File '{'encrypted_msg.txt'}' not found!")  # this will show on screen
+        logging.error(f"File '{'encrypted_msg.txt'}' not found!") # this will go to log.txt
+        sys.exit(1)
+
     logging.info("Starting number to text conversion")
     for ch in text:
         assert ch.isdigit() or ch == ",", "Invalid character in encrypted file"
@@ -68,6 +93,16 @@ def numbers_to_text(text):
 
 
 def main():
+    """
+    Main function to handle encryption or decryption based on command-line argument.
+
+    Usage:
+        python script.py encrypt
+        python script.py decrypt
+
+    Encrypts user input text to numbers or decrypts the contents of 'encrypted_msg.txt' and prints the result.
+    Logs all major actions and errors.
+    """
     logging.info("Program started")
 
     if len(sys.argv) != 2:
@@ -90,7 +125,8 @@ def main():
             with open("encrypted_msg.txt", "r") as file:
                 encrypted_text = file.read().strip()
         except FileNotFoundError:
-            logging.error("File 'encrypted_msg.txt' not found!")
+            assert "File 'encrypted_msg.txt' not found!"
+            logging.error(AssertionError)
             sys.exit(1)
 
         decrypted = numbers_to_text(encrypted_text)
