@@ -28,8 +28,8 @@ except ImportError:
     sys.exit(1)
 
 # ─── Connection ───────────────────────────────────────────────────────────────
-SERVER_IP = sys.argv[1] if len(sys.argv) > 1 else '127.0.0.1'
-PORT      = int(sys.argv[2]) if len(sys.argv) > 2 else 5555
+SERVER_IP = '127.0.0.1'
+PORT      =  5555
 
 # ─── Screen ──────────────────────────────────────────────────────────────────
 W, H      = 900, 450
