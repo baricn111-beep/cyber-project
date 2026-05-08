@@ -68,7 +68,7 @@ PTERO_Y     = GROUND_Y - 58   # must duck to avoid
 EGG_W       = 20
 EGG_H       = 26
 
-PORT        = int(sys.argv[1]) if len(sys.argv) > 1 else 5555
+PORT        =  5555
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
